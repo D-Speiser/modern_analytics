@@ -19,16 +19,23 @@ def parse_data (file_path):
                 digits.append(np.array(pixels))
         finally:
             input.close()
-            return {'labels': labels, 'digits': digits}
+            return {'labels': labels[1:], 'digits': digits[1:]}
     except IOError:
         print "Error - please check filename and try again.\n"
         sys.exit(1)
 
-# Write a function to display MNIST digit
-def save_image (pixel_matrix, index):
-    index += 1
-    matplotlib.image.imsave('digit_' + str(index), data)
-    return 
+# Save MNIST digits
+def save_digits (data_set):
+    digit_flag = np.zeros(10) #initialize boolean flag array
+    
+    index = 0
+    for label in data_set['labels']:
+        if digit_flag[int(label)] == False:
+            matplotlib.image.imsave('digit_' + label, data_set['digits'][index])
+            digit_flag[int(label)] = True
+            print label, " at index ", index # for debugging
+        index += 1
+    return
 
 def get_digit_frequencies(digits):
     frequencies = np.zeros(10)
@@ -45,6 +52,6 @@ def build_normalized_histogram(data_set):
     plt.show()
 
 data_set = parse_data('./train.csv')
-build_normalized_histogram(data_set)
 
-# display_digit(data, 1)
+save_digits(data_set)
+build_normalized_histogram(data_set)
