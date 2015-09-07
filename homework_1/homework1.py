@@ -5,6 +5,7 @@ import numpy as np
 import scipy as sp
 import sys
 import csv
+import datetime as time
 
 TRAIN_PATH = './train.csv'
 TEST_PATH = './test.csv'
@@ -71,13 +72,18 @@ def find_best_matches(dig_inst_idx, data_set):
 
 
 def save_best_fits(data_set, best_fits):
-    for idx, fit in enumerate(best_fits):
+    for digit, fit in enumerate(best_fits):
+        print "L2 distance between sample {0} and nearest neighbor: {1} pixels".format(digit, fit[0])
         matrix = data_set['pixels'][fit[1]].reshape(28, 28) # reshape 1d array into 2d, size 28x28
-        img.imsave('best_fit_' + str(idx), matrix, cmap="gray_r")
+        img.imsave('best_fit_' + str(digit), matrix, cmap="gray_r")
 
 
 # train_set, test_set = parse_data(TRAIN_PATH), parse_data(TEST_PATH) # UNCOMMENT ATFER completion. ALSO ADD condition to parse_data method, as input structure varies
+start = time.datetime.now() 
+
 train_set = parse_data(TRAIN_PATH)
 digit_instance_idx = save_digits(train_set)
 build_normalized_histogram(train_set)
 find_best_matches(digit_instance_idx, train_set)
+
+print "Time to run script: {0} ".format(time.datetime.now() - start)
